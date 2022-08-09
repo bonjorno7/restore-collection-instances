@@ -3,9 +3,11 @@ bl_info = {
     'author': 'bonjorno7',
     'description': 'Turn collection instances back into collections, with their original hierarchy',
     'blender': (3, 2, 0),
-    'version': (1, 1, 1),
+    'version': (1, 1, 2),
     'category': 'Object',
     'location': 'View3D > Object > Apply',
+    'doc_url': 'https://keyboardrenderkit.readthedocs.io',
+    'tracker_url': 'https://github.com/bonjorno7/restore-collection-instances',
 }
 
 import bpy
