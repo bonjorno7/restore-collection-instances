@@ -3,7 +3,7 @@ bl_info = {
     'author': 'bonjorno7',
     'description': 'Turn collection instances back into collections',
     'blender': (3, 2, 0),
-    'version': (1, 0, 0),
+    'version': (1, 1, 0),
     'category': 'Object',
     'location': 'View3D > Object > Apply',
 }

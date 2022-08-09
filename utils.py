@@ -1,7 +1,7 @@
 import bpy
 
 
-def realize_instance(context: bpy.types.Context, instance: bpy.types.Object):
+def realize_instance(context: bpy.types.Context, instance: bpy.types.Object, linked: bool):
     old_collection = instance.instance_collection
     new_collection = duplicate_collection(old_collection)
 
@@ -12,7 +12,7 @@ def realize_instance(context: bpy.types.Context, instance: bpy.types.Object):
     collection_data = show_collection(new_collection)
     old_objects: list[bpy.types.Object] = new_collection.all_objects[:]
     bpy.ops.object.select_all(action='DESELECT')
-    bpy.ops.object.duplicate({'selected_objects': old_objects}, linked=True)
+    bpy.ops.object.duplicate({'selected_objects': old_objects}, linked=linked)
     new_objects: list[bpy.types.Object] = context.selected_objects[:]
     hide_collection(new_collection, collection_data)
 

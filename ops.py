@@ -5,8 +5,14 @@ from . import utils
 class OBJECT_OT_restore_collection_instances(bpy.types.Operator):
     bl_idname = 'object.restore_collection_instances'
     bl_label = 'Restore Collection Instances'
-    bl_description = 'Replace selected instances with their collections, using new objects but linked data'
+    bl_description = 'Replace instances with collections, using duplicate objects'
     bl_options = {'REGISTER', 'UNDO'}
+
+    linked: bpy.props.BoolProperty(
+        name='Linked',
+        description='Duplicate object but not object data, linking to the original data',
+        default=True,
+    )
 
     def execute(self, context: bpy.types.Context) -> set:
         objects: list[bpy.types.Object] = context.selected_objects[:]
@@ -19,7 +25,7 @@ class OBJECT_OT_restore_collection_instances(bpy.types.Operator):
                 continue
             if not object.instance_collection:
                 continue
-            utils.realize_instance(context, object)
+            utils.realize_instance(context, object, self.linked)
 
         utils.tag_redraw(context)
         return {'FINISHED'}
