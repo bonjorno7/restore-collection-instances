@@ -1,0 +1,26 @@
+{
+    "editor.rulers": [
+        80,
+        120
+    ],
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "python.formatting.provider": "yapf",
+    "python.formatting.yapfArgs": [
+        "--style",
+        "{based_on_style: google, column_limit: 120}"
+    ],
+    "python.sortImports.args": [
+        "-l",
+        "120"
+    ],
+    "[python]": {
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true
+    },
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": false,
+    "files.exclude": {
+        "**/*.pyc": true
+    }
+}
