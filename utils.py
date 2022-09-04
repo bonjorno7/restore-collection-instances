@@ -1,33 +1,46 @@
 import bpy
 
 
-def realize_instance(context: bpy.types.Context, instance: bpy.types.Object, linked: bool):
+def realize_instance(context: bpy.types.Context, instance: bpy.types.Object, duplicate: bool, linked: bool):
     old_collection = instance.instance_collection
-    new_collection = duplicate_collection(old_collection)
 
-    for collection in instance.users_collection:
-        collection: bpy.types.Collection
-        collection.children.link(new_collection)
+    if duplicate:
+        new_collection = duplicate_collection(old_collection)
 
-    collection_data = show_collection(new_collection)
-    old_objects: list[bpy.types.Object] = new_collection.all_objects[:]
-    bpy.ops.object.select_all(action='DESELECT')
-    bpy.ops.object.duplicate({'selected_objects': old_objects}, linked=linked)
-    new_objects: list[bpy.types.Object] = context.selected_objects[:]
-    hide_collection(new_collection, collection_data)
+        for collection in set(instance.users_collection):
+            collection: bpy.types.Collection
+            if new_collection.name not in collection.children:
+                collection.children.link(new_collection)
 
-    unlink_objects(old_collection, new_objects)
-    unlink_objects(new_collection, old_objects)
+        collection_data = show_collection(new_collection)
+        old_objects: list[bpy.types.Object] = new_collection.all_objects[:]
 
-    origin = bpy.data.objects.new(new_collection.name, None)
-    new_collection.objects.link(origin)
-    origin.matrix_world = instance.matrix_world
-    context.view_layer.objects.active = origin
-    origin.select_set(True)
+        bpy.ops.object.select_all(action='DESELECT')
+        for object in old_objects:
+            object.select_set(True)
+        bpy.ops.object.duplicate(linked=linked)
 
-    for object in new_objects:
-        if not object.parent:
-            object.parent = origin
+        new_objects: list[bpy.types.Object] = context.selected_objects[:]
+        hide_collection(new_collection, collection_data)
+
+        unlink_objects(old_collection, new_objects)
+        unlink_objects(new_collection, old_objects)
+
+        origin = bpy.data.objects.new(new_collection.name, None)
+        new_collection.objects.link(origin)
+        origin.matrix_world = instance.matrix_world
+        context.view_layer.objects.active = origin
+        origin.select_set(True)
+
+        for object in new_objects:
+            if not object.parent:
+                object.parent = origin
+
+    else:
+        for collection in instance.users_collection:
+            collection: bpy.types.Collection
+            if old_collection.name not in collection.children:
+                collection.children.link(old_collection)
 
     bpy.data.objects.remove(instance)
 
