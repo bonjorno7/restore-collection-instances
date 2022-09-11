@@ -6,7 +6,10 @@ from .utils import Uninstancer
 class OBJECT_OT_restore_collection_instances(Operator):
     bl_idname = 'object.restore_collection_instances'
     bl_label = 'Restore Collection Instances'
-    bl_description = 'Replace instances with collections, using duplicate objects'
+    bl_description = '.\n'.join((
+        'Duplicate collections and objects, optionally reusing object data',
+        'Or just link the original collection, making it and everything inside local',
+    ))
     bl_options = {'REGISTER', 'UNDO'}
 
     duplicate: BoolProperty(
