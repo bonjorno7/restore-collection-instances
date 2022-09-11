@@ -10,19 +10,20 @@ bl_info = {
     'tracker_url': 'https://github.com/bonjorno7/restore-collection-instances',
 }
 
-import bpy
-from . import ops
+from bpy.types import Context, Menu, VIEW3D_MT_object_apply
+from bpy.utils import register_class, unregister_class
+from .ops import OBJECT_OT_restore_collection_instances
 
 
-def object_apply_menu(self: bpy.types.Menu, context: bpy.types.Context):
-    self.layout.operator(ops.OBJECT_OT_restore_collection_instances.bl_idname)
+def object_apply_menu(self: Menu, context: Context):
+    self.layout.operator(OBJECT_OT_restore_collection_instances.bl_idname)
 
 
 def register():
-    bpy.utils.register_class(ops.OBJECT_OT_restore_collection_instances)
-    bpy.types.VIEW3D_MT_object_apply.append(object_apply_menu)
+    register_class(OBJECT_OT_restore_collection_instances)
+    VIEW3D_MT_object_apply.append(object_apply_menu)
 
 
 def unregister():
-    bpy.types.VIEW3D_MT_object_apply.remove(object_apply_menu)
-    bpy.utils.unregister_class(ops.OBJECT_OT_restore_collection_instances)
+    VIEW3D_MT_object_apply.remove(object_apply_menu)
+    unregister_class(OBJECT_OT_restore_collection_instances)
