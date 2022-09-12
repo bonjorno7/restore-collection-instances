@@ -1,9 +1,8 @@
 from typing import Any, Iterator, List, Tuple
-from bpy.types import ID, Collection, NodeTree, Object, Property
+from bpy.types import ID, Collection, Object, Property
 
 
 class Uninstancer:
-    IGNORED = (Object, Collection, NodeTree)
 
     def __init__(self, duplicate: bool, reuse_data: bool):
         self.duplicate = duplicate
@@ -20,7 +19,7 @@ class Uninstancer:
 
         self.copy_objects_and_data(collection)
         self.replace_objects(collection)
-        self.replace_object_props(collection)
+        self.update_objects(collection)
 
         if self.duplicate:
             self.parent_objects(instance, collection.all_objects)
@@ -37,7 +36,7 @@ class Uninstancer:
         if collection in self.cache:
             return self.cache[collection]
 
-        collection = self.copy_id(collection)
+        collection = self.copy_data(collection)
 
         for child in collection.children.values():
             collection.children.unlink(child)
@@ -52,13 +51,13 @@ class Uninstancer:
 
     def copy_objects_and_data(self, collection: Collection):
         for object in collection.all_objects.values():
-            self.copy_id(object)
+            self.copy_data(object)
 
         for object in collection.all_objects.values():
             if object.data:
-                self.copy_id(object.data)
+                self.copy_data(object.data)
 
-    def copy_id(self, data: ID) -> ID:
+    def copy_data(self, data: ID) -> ID:
         if data in self.cache:
             return self.cache[data]
 
@@ -77,31 +76,31 @@ class Uninstancer:
         for child in collection.children.values():
             self.replace_objects(child)
 
-    def replace_object_props(self, collection: Collection):
+    def update_objects(self, collection: Collection):
         for object in collection.all_objects.values():
             matrix = object.matrix_parent_inverse.copy()
-            self.replace_data_props(object)
+            self.update_props(object)
             object.matrix_parent_inverse = matrix
 
-    def replace_data_props(self, data: ID):
+    def update_props(self, data: ID):
         if data not in self.done:
             self.done.add(data)
 
-            self.replace_rna_props(data)
-            self.replace_custom_props(data)
+            self.update_rna_props(data)
+            self.update_custom_props(data)
 
-    def replace_rna_props(self, data: ID):
+    def update_rna_props(self, data: ID):
         for key, prop, value in self.get_rna_props(data):
             if prop.type == 'POINTER':
                 if not prop.is_readonly and value in self.cache:
                     setattr(data, key, self.cache[value])
-                elif not isinstance(value, self.IGNORED):
-                    self.replace_data_props(value)
+                elif not isinstance(value, ID):
+                    self.update_props(value)
 
             elif prop.type == 'COLLECTION':
                 for item in value:
-                    if not isinstance(item, self.IGNORED):
-                        self.replace_data_props(item)
+                    if not isinstance(item, ID):
+                        self.update_props(item)
 
     def get_rna_props(self, data: ID) -> Iterator[Tuple[str, Property, Any]]:
         if hasattr(data, 'bl_rna'):
@@ -112,12 +111,12 @@ class Uninstancer:
                     if prop.type in ('POINTER', 'COLLECTION'):
                         yield key, prop, getattr(data, key)
 
-    def replace_custom_props(self, data: ID):
+    def update_custom_props(self, data: ID):
         for key, value in self.get_custom_props(data):
             if value in self.cache:
                 data[key] = self.cache[value]
-            elif not isinstance(value, self.IGNORED):
-                self.replace_data_props(value)
+            elif not isinstance(value, ID):
+                self.update_props(value)
 
     def get_custom_props(self, data: ID) -> Iterator[Tuple[str, Any]]:
         if hasattr(data, '__getitem__'):
@@ -131,3 +130,4 @@ class Uninstancer:
     def clear_instance(self, instance: Object):
         instance.instance_type = 'NONE'
         instance.instance_collection = None
+        instance.empty_display_size = 0.1
