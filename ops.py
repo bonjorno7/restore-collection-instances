@@ -36,6 +36,7 @@ class OBJECT_OT_restore_collection_instances(Operator):
 
     def execute(self, context: Context) -> set:
         uninstancer = Uninstancer(self.duplicate, self.linked)
+        instances = set()
 
         for object in context.selected_objects.copy():
             object: Object
@@ -44,6 +45,13 @@ class OBJECT_OT_restore_collection_instances(Operator):
                 if object.instance_type == 'COLLECTION':
                     if object.instance_collection:
                         uninstancer.uninstance(object)
+                        instances.add(object)
+
+        for object in context.selected_objects.copy():
+            object: Object
+
+            if object not in instances:
+                object.select_set(False)
 
         for window in context.window_manager.windows.values():
             for area in window.screen.areas.values():
