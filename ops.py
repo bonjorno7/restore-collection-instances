@@ -18,8 +18,8 @@ class OBJECT_OT_restore_collection_instances(Operator):
         default=True,
     )
 
-    linked: BoolProperty(
-        name='Linked',
+    reuse_data: BoolProperty(
+        name='Reuse Data',
         description='Duplicate object but not object data, linking to the original data',
         default=True,
     )
@@ -32,10 +32,10 @@ class OBJECT_OT_restore_collection_instances(Operator):
         layout.prop(self, 'duplicate')
         sub = layout.row()
         sub.enabled = self.duplicate
-        sub.prop(self, 'linked')
+        sub.prop(self, 'reuse_data')
 
     def execute(self, context: Context) -> set:
-        uninstancer = Uninstancer(self.duplicate, self.linked)
+        uninstancer = Uninstancer(self.duplicate, self.reuse_data)
         instances = set()
 
         for object in context.selected_objects.copy():

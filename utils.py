@@ -5,9 +5,9 @@ from bpy.types import ID, Collection, NodeTree, Object, Property
 class Uninstancer:
     IGNORED = (Object, Collection, NodeTree)
 
-    def __init__(self, duplicate: bool, linked: bool):
+    def __init__(self, duplicate: bool, reuse_data: bool):
         self.duplicate = duplicate
-        self.linked = linked
+        self.reuse_data = reuse_data
 
         self.cache = dict()
         self.done = set()
@@ -28,7 +28,7 @@ class Uninstancer:
 
     def clear_cache(self):
         for key, value in list(self.cache.items()):
-            if not self.linked or isinstance(value, (Object, Collection)):
+            if not self.reuse_data or isinstance(value, (Object, Collection)):
                 del self.cache[key]
 
         self.done.clear()
