@@ -17,7 +17,7 @@ class Uninstancer:
         collection = self.copy_collection(instance.instance_collection)
         self.link_collection(instance.users_collection, collection)
 
-        self.copy_objects_and_data(collection)
+        self.copy_objects(collection)
         self.replace_objects(collection)
         self.update_objects(collection)
 
@@ -49,7 +49,7 @@ class Uninstancer:
             if child not in parent.children.values():
                 parent.children.link(child)
 
-    def copy_objects_and_data(self, collection: Collection):
+    def copy_objects(self, collection: Collection):
         for object in collection.all_objects.values():
             self.copy_data(object)
 
