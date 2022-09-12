@@ -53,6 +53,8 @@ class OBJECT_OT_restore_collection_instances(Operator):
             if object not in instances:
                 object.select_set(False)
 
+        context.view_layer.update()
+
         for window in context.window_manager.windows.values():
             for area in window.screen.areas.values():
                 area.tag_redraw()
