@@ -130,4 +130,3 @@ class Uninstancer:
     def clear_instance(self, instance: Object):
         instance.instance_type = 'NONE'
         instance.instance_collection = None
-        instance.empty_display_size = 0.1
