@@ -8,19 +8,19 @@ class OBJECT_OT_restore_collection_instances(Operator):
     bl_label = 'Restore Collection Instances'
     bl_description = '.\n'.join((
         'Duplicate collections and objects, optionally reusing object data',
-        'Or just link the original collection, making it and everything inside local',
+        'Or just link the original collections, making them and everything inside local',
     ))
     bl_options = {'REGISTER', 'UNDO'}
 
     duplicate: BoolProperty(
         name='Duplicate',
-        description='Duplicate instance collection, its children, and the objects inside',
+        description='Duplicate collections, their children, and the objects inside',
         default=True,
     )
 
     reuse_data: BoolProperty(
         name='Reuse Data',
-        description='Duplicate object but not object data, linking to the original data',
+        description='Duplicate objects but not object data, linking to the original data',
         default=True,
     )
 
