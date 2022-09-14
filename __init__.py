@@ -2,7 +2,7 @@ bl_info = {
     'name': 'Restore Collection Instances',
     'author': 'bonjorno7',
     'description': 'Turn collection instances back into collections, with their original hierarchy',
-    'blender': (3, 2, 0),
+    'blender': (2, 80, 0),
     'version': (2, 0, 3),
     'category': 'Object',
     'location': 'View3D > Object > Apply',
