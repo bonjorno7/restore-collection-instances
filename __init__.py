@@ -3,7 +3,7 @@ bl_info = {
     'author': 'bonjorno7',
     'description': 'Turn collection instances back into collections, with their original hierarchy',
     'blender': (2, 80, 0),
-    'version': (2, 0, 3),
+    'version': (2, 0, 4),
     'category': 'Object',
     'location': 'View3D > Object > Apply',
     'doc_url': 'https://keyboardrenderkit.readthedocs.io/en/stable/rci.html',
