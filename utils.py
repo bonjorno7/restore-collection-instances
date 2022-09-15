@@ -103,13 +103,15 @@ class Uninstancer:
                         self.update_props(item)
 
     def get_rna_props(self, data: ID) -> Iterator[Tuple[str, Property, Any]]:
-        if hasattr(data, 'bl_rna'):
+        try:
             for key, prop in data.bl_rna.properties.items():
                 prop: Property
 
                 if key != 'rna_type':
                     if prop.type in ('POINTER', 'COLLECTION'):
                         yield key, prop, getattr(data, key)
+        except:
+            pass
 
     def update_custom_props(self, data: ID):
         for key, value in self.get_custom_props(data):
@@ -119,8 +121,10 @@ class Uninstancer:
                 self.update_props(value)
 
     def get_custom_props(self, data: ID) -> Iterator[Tuple[str, Any]]:
-        if hasattr(data, '__getitem__'):
+        try:
             yield from data.items()
+        except:
+            pass
 
     def parent_objects(self, parent: Object, children: List[Object]):
         for child in children:
